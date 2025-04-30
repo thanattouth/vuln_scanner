@@ -4,13 +4,13 @@ VULNERABILITY SCANNER (SQL INJECTION & XSS)
 รายละเอียด:
 ------------
 เครื่องมือนี้เป็น Vulnerability Scanner พื้นฐาน ที่ใช้สำหรับตรวจจับช่องโหว่
-SQL Injection และ Cross-Site Scripting (XSS) ทั้งแบบ GET, POST และสามารถสแกนอัตโนมัติจาก <form> บนหน้าเว็บไซต์
+SQL Injection และ Cross-Site Scripting (XSS) ทั้งแบบ GET, POST และสามารถสแกนอัตโนมัติจาก <form> บนหน้าเว็บไซต์ รวมถึงรองรับการสแกนฟอร์มที่ใช้ React/Next.js และการคลิกปุ่ม onClick
 
 วิธีติดตั้ง:
 -------------
 1. ติดตั้ง Python (แนะนำเวอร์ชัน 3.8 ขึ้นไป)
 2. ติดตั้งไลบรารีที่จำเป็น:
-   pip install requests beautifulsoup4 colorama
+   pip install requests beautifulsoup4 colorama selenium
 
 การใช้งาน:
 -----------
@@ -20,12 +20,20 @@ SQL Injection และ Cross-Site Scripting (XSS) ทั้งแบบ GET, PO
 2) รันแบบ manual โดยระบุพารามิเตอร์:
    python scanner.py http://example.com id GET
 
+3) รันแบบ Dynamic Scan (รองรับ React/Next.js, ฟอร์มที่ใช้ onClick):
+   python scanner_dynamic.py http://example.com
+
+4) รันแบบ manual สำหรับ Dynamic Scan:
+   python scanner_dynamic.py http://example.com id GET
+
 หมายเหตุ:
 - scanner.py จะสแกนทั้ง SQLi และ XSS ในฟอร์มหรือพารามิเตอร์ที่กำหนด
+- scanner_dynamic.py จะรองรับฟอร์มใน React/Next.js และเหตุการณ์ onClick สำหรับการส่งฟอร์ม
 - เมื่อจบการสแกน ระบบจะสร้างรายงาน .json ในรูปแบบ: report_YYYYMMDD_HHMMSS.json
 
 คุณสมบัติ:
 -----------
+**scanner.py**
 - ตรวจจับ SQL Injection จากข้อความ error (GET/POST)
 - ตรวจจับ Reflected XSS (GET/POST)
 - ตรวจจับ Stored XSS เบื้องต้น (POST แล้ว revisit หน้าเดิม)
@@ -33,6 +41,15 @@ SQL Injection และ Cross-Site Scripting (XSS) ทั้งแบบ GET, PO
 - แสดงผลแบบมีสี (Colorized output)
 - ค้นหา <form> อัตโนมัติด้วย BeautifulSoup
 - สร้างรายงานสรุปเป็นไฟล์ JSON
+
+**scanner_dynamic.py**
+- รองรับการตรวจจับช่องโหว่ในเว็บไซต์ที่ใช้ React/Next.js
+- ตรวจจับ SQL Injection (GET/POST)
+- ตรวจจับ Reflected XSS (GET/POST)
+- ตรวจจับ Stored XSS (เฉพาะ POST แล้ว revisit หน้าเดิม)
+- รองรับการคลิกปุ่ม onClick ใน React
+- รองรับการสแกนแบบ dynamic ด้วย Selenium (รองรับการทดสอบ JavaScript ที่จำเป็น)
+- การสร้างรายงานเป็นไฟล์ JSON พร้อมแสดงผลสีที่ชัดเจน
 
 ข้อจำกัด:
 ----------
