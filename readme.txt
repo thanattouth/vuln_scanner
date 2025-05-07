@@ -1,35 +1,70 @@
-=== วิธีใช้งาน Web Scanner ===
 
-1. ติดตั้งไลบรารีที่จำเป็น:
-   pip install -r requirements.txt
+==============================
+ Web Vulnerability Scanner Tool
+==============================
 
-   ไฟล์ requirements.txt ควรประกอบด้วย:
-     - requests
-     - beautifulsoup4
-     - colorama
-     - selenium
+Author: thanattouth
+Version: beta
 
-2. ติดตั้ง Firefox และ Geckodriver:
-   - ดาวน์โหลด Firefox: https://www.mozilla.org/th/firefox/new/
-   - ดาวน์โหลด Geckodriver: https://github.com/mozilla/geckodriver/releases
-   - เพิ่ม geckodriver ลงใน PATH
+This tool scans a target website for common vulnerabilities including SQL Injection (SQLi),
+Reflected XSS, and DOM-based XSS. It supports both form-based and JWT-based authentication.
 
-3. รันสคริปต์:
-   python scanner.py
+--------------------------------------------------
+🛠️ Requirements:
+--------------------------------------------------
+- Python 3.8+
+- Firefox browser (for DOM XSS via Selenium)
+- Geckodriver installed and in PATH
+- pip install -r requirements.txt
 
-4. ใส่ URL เป้าหมาย เช่น:
-   https://example.com
+--------------------------------------------------
+🚀 How to Run:
+--------------------------------------------------
+$ python scanner.py
 
-5. รายงานจะถูกบันทึกไว้ที่:
-   scan_results.json
+You will be prompted for:
+1. Target URL:             → e.g., https://example.com
+2. Do you need login?      → y/n
+3. Login type:             → form / jwt (auto-detected if unknown)
+4. Login URL:              → e.g., https://example.com/login
+5. Username:               → e.g., admin
+6. Password:               → your password
+7. JWT Field (if needed):  → e.g., access_token (auto-detected if blank)
 
-   ประเภทช่องโหว่ที่ตรวจจับ:
-   - SQL Injection
-   - Reflected XSS
-   - DOM-based XSS
+--------------------------------------------------
+🔍 What It Does:
+--------------------------------------------------
+- Crawls and extracts all forms from the target page.
+- Submits a series of payloads to detect:
+    ✔️ SQL Injection (error-based, simple bypasses)
+    ✔️ Reflected XSS (alert-based)
+    ✔️ DOM-based XSS (via headless Firefox)
 
-6. หมายเหตุ:
-   - หากเว็บไซต์มีการ redirect หรือใช้ JavaScript โหลดฟอร์ม อาจต้องปรับแต่งเพิ่มเติม
-   - DOM-based XSS ต้องการให้ alert() แสดงผลเพื่อให้ตรวจจับได้
+- Stores results in a file named `scan_results.json`
 
-== จบ ==
+--------------------------------------------------
+📦 Output:
+--------------------------------------------------
+- scan_results.json → All found vulnerabilities in structured format
+
+--------------------------------------------------
+📌 Notes:
+--------------------------------------------------
+- The tool cannot detect CSRF-protected or JavaScript-only login flows.
+- CAPTCHA and 2FA are not bypassed.
+- Ensure geckodriver is installed and in system PATH for DOM XSS detection.
+
+--------------------------------------------------
+✅ Best Use Cases:
+--------------------------------------------------
+- TryHackMe / CTF challenge automation
+- Quick vulnerability checks on dev/staging websites
+- Learning input sanitization issues
+
+--------------------------------------------------
+🔒 Disclaimer:
+--------------------------------------------------
+This tool is intended for authorized testing only.
+Unauthorized scanning of third-party websites may be illegal.
+Use responsibly and ethically.
+
